@@ -10,6 +10,7 @@ data class Song(val authors: ArrayList<Author>,
                 val tags: ArrayList<String>,
                 val title: String,
                 val uri: String) {
+
     override fun toString(): String {
         return title
     }

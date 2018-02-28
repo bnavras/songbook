@@ -6,5 +6,4 @@ data class Author(val name: String,
     override fun toString(): String {
         return "$name(${types.joinToString(",")})"
     }
-    class List : ArrayList<Author>()
 }

@@ -20,7 +20,6 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         recyclerView.itemAnimator = DefaultItemAnimator()
 
-
         Thread(Runnable {
             val client = OkHttpClient()
             val request = Request.Builder()
@@ -29,11 +28,8 @@ class MainActivity : AppCompatActivity() {
                     .build()
             val response = client.newCall(request).execute()
             val responseText = response.body()!!.string()
-
-            val author = "{\"name\":\"Viktor\", \"types\": [\"Viktor\", \"Viktor\",\"Viktor\"], \"uri\":\"Viktor\"}"
-            val ertr = Gson().fromJson(author, Author::class.java)
-
             val repos = Gson().fromJson(responseText, SongInfo::class.java)
+
             runOnUiThread{
                 val adapter = SongAdapter(repos.objects)
                 recyclerView.adapter = adapter
