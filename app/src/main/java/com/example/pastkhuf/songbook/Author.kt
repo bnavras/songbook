@@ -1,8 +1,10 @@
 package com.example.pastkhuf.songbook
 
-data class Author(val name: String,
+import java.io.Serializable
+
+data class Author (val name: String,
                   val types: ArrayList<String>,
-                  val uri: String) {
+                  val uri: String) :Serializable {
     override fun toString(): String {
         return "$name(${types.joinToString(",")})"
     }

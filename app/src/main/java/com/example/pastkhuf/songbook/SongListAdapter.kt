@@ -7,17 +7,17 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import org.jetbrains.anko.*
 
-class SongAdapter2(private val items: List<Song>): BaseAdapter() {
+class SongListAdapter(private val songs: List<Song>): BaseAdapter() {
     override fun getItemId(position: Int): Long {
         return getItem(position).id
     }
 
     override fun getItem(position: Int): Song {
-        return items[position]
+        return songs[position]
     }
 
     override fun getCount(): Int {
-        return items.size
+        return songs.size
     }
 
     @SuppressLint("ResourceType")
