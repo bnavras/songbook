@@ -7,4 +7,5 @@ data class Chord(val code: String,
                  val instrument: Instrument,
                  val name: String,
                  val uri: String): Serializable {
+    class List : ArrayList<Chord>()
 }
