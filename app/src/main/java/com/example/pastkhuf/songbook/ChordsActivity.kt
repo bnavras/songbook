@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import com.bumptech.glide.Glide
+import com.example.pastkhuf.songbook.DataClass.Chord
 import org.jetbrains.anko.imageView
 import org.jetbrains.anko.support.v4.nestedScrollView
 import org.jetbrains.anko.textView
@@ -14,7 +15,7 @@ class ChordsActivity: AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val chords = intent.getSerializableExtra("chords") as ArrayList<Chord>
-        val path = "https://img-android.lisisoft.com/imgmic/5/2/3725-i-com.youramazngapps.milkshakeandsalad.jpg"
+
         nestedScrollView{
             verticalLayout{
                 textView{

@@ -1,4 +1,4 @@
-package com.example.pastkhuf.songbook
+package com.example.pastkhuf.songbook.DataClass
 
 import java.io.Serializable
 

@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">songbook</string>
+    <string name="app_name">Songbook</string>
+    <string name="api_key">27b65ca0ece5d0cffa3e8fa9c3e3c41c20294f14</string>
+    <string name="api_path">http://api.guitarparty.com/v2/</string>
 </resources>

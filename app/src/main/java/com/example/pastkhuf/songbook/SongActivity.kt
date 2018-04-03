@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.example.pastkhuf.songbook.DataClass.Song
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.nestedScrollView
@@ -46,7 +47,9 @@ class SongActivity : AppCompatActivity() {
                     setPadding(2,10,2,2)
                 }.lparams{ below(3) }
 
-                button("Show chords").onClick {
+                button("Show chords").lparams{
+                    alignParentRight()
+                }.onClick {
                     doAsync {
                         uiThread {
                             val intent = Intent(this@SongActivity, ChordsActivity::class.java)

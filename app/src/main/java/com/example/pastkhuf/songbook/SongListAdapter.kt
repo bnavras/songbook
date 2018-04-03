@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import com.example.pastkhuf.songbook.DataClass.Song
 import org.jetbrains.anko.*
 
 class SongListAdapter(private val songs: List<Song>): BaseAdapter() {
