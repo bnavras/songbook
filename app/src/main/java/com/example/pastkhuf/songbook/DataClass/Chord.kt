@@ -1,5 +1,4 @@
 package com.example.pastkhuf.songbook.DataClass
-
 import java.io.Serializable
 
 data class Chord(val code: String,

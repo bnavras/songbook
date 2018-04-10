@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
             }
             val buttonWidth = 800
             val buttonTextSize = 30f
-            val buttonColor = Color.argb(100, 26, 72, 235)
             button{
                 width = buttonWidth
                 id = 1
@@ -63,7 +62,6 @@ class MainActivity : AppCompatActivity() {
                 id = 3
                 text = "Help"
                 textSize = buttonTextSize
-                setBackgroundColor(Color.argb(100, 100, 100, 100))
             }.lparams{
                 below(2)
                 centerVertically()
