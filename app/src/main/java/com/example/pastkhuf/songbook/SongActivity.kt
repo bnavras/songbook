@@ -6,7 +6,10 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.example.pastkhuf.songbook.DataClass.Song
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.*
+import org.jetbrains.anko.custom.async
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.nestedScrollView
 
@@ -50,16 +53,13 @@ class SongActivity : AppCompatActivity() {
                 button("Show chords").lparams{
                     alignParentRight()
                 }.onClick {
-                    doAsync {
-                        uiThread {
-                            val intent = Intent(this@SongActivity, ChordsActivity::class.java)
-                            intent.putExtra("chords", song.chords)
-                            startActivity(intent)
-                        }
+                    async(CommonPool) {
+                        val intent = Intent(this@SongActivity, ChordsActivity::class.java)
+                        intent.putExtra("chords", song.chords)
+                        startActivity(intent)
                     }
                 }
             }
         }
-
     }
 }

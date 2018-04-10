@@ -2,11 +2,12 @@ package com.example.pastkhuf.songbook
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
@@ -37,11 +38,9 @@ class MainActivity : AppCompatActivity() {
                 centerVertically()
                 centerHorizontally()
             }.onClick {
-                doAsync {
-                    uiThread {
-                        val intent = Intent(this@MainActivity, SongsActivity::class.java)
-                        startActivity(intent)
-                    }
+                async(CommonPool) {
+                    val intent = Intent(this@MainActivity, SongsActivity::class.java)
+                    startActivity(intent)
                 }
             }
             button {
@@ -53,8 +52,6 @@ class MainActivity : AppCompatActivity() {
                 below(1)
                 centerVertically()
                 centerHorizontally()
-            }.onClick {
-
             }
 
             button {
@@ -67,11 +64,9 @@ class MainActivity : AppCompatActivity() {
                 centerVertically()
                 centerHorizontally()
             }.onClick {
-                doAsync {
-                    uiThread {
-                        val intent = Intent(this@MainActivity, HelpActivity::class.java)
-                        startActivity(intent)
-                    }
+                async(CommonPool){
+                    val intent = Intent(this@MainActivity, HelpActivity::class.java)
+                    startActivity(intent)
                 }
             }
         }

@@ -9,10 +9,11 @@ import android.widget.SearchView
 import com.example.pastkhuf.songbook.DataClass.Song
 import com.example.pastkhuf.songbook.DataClass.SongInfo
 import com.google.gson.Gson
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.*
 
 class SongsActivity : AppCompatActivity() {
     @SuppressLint("ResourceType")
@@ -30,37 +31,31 @@ class SongsActivity : AppCompatActivity() {
                     loadSongs(songsView, searcher.query)
                     return false
                 }
-
-
             })
             songsView.setOnItemClickListener { parent, view, position, l ->
                 val song = parent.getItemAtPosition(position) as Song
-                doAsync {
-                    uiThread {
-                        val intent = Intent(this@SongsActivity, SongActivity::class.java)
-                        intent.putExtra("song", song)
-                        startActivity(intent)
-                    }
-                }
+                async(CommonPool) {
+                    val intent = Intent(this@SongsActivity, SongActivity::class.java)
+                    intent.putExtra("song", song)
+                    startActivity(intent)
+                }.start()
             }
         }
     }
-    private fun loadSongs(songsView: ListView, query: CharSequence) {
-        Thread(Runnable {
-            val client = OkHttpClient()
-            val request = Request.Builder()
-                    .url(resources.getString(R.string.api_path) + "songs/?query="+ (if(query.isEmpty()) "a" else query))
-                    .addHeader("Guitarparty-Api-Key", resources.getString(R.string.api_key))
-                    .build()
-            val response = client.newCall(request).execute()
-            val responseText = response.body()!!.string()
-            val repos = Gson().fromJson(responseText, SongInfo::class.java)
+    private fun loadSongs(songsView: ListView, query: CharSequence) = async(CommonPool) {
+        val client = OkHttpClient()
+        val request = Request.Builder()
+                .url(resources.getString(R.string.api_path) + "songs/?query="+ (if(query.isEmpty()) "a" else query))
+                .addHeader("Guitarparty-Api-Key", resources.getString(R.string.api_key))
+                .build()
+        val response = client.newCall(request).execute()
+        val responseText = response.body()!!.string()
+        val repos = Gson().fromJson(responseText, SongInfo::class.java)
 
-            runOnUiThread{
-                val adapter = SongListAdapter(repos.objects)
-                songsView.adapter = adapter
-                adapter.notifyDataSetChanged()
-            }
-        }).start()
-    }
+        runOnUiThread{
+            val adapter = SongListAdapter(repos.objects)
+            songsView.adapter = adapter
+            adapter.notifyDataSetChanged()
+        }
+    }.start()
 }
