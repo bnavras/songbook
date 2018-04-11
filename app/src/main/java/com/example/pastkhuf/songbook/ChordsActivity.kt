@@ -13,9 +13,18 @@ import org.jetbrains.anko.support.v4.nestedScrollView
 import org.jetbrains.anko.textView
 import org.jetbrains.anko.verticalLayout
 import android.graphics.Bitmap
+import android.os.Environment
 import android.widget.ImageView
 import com.squareup.picasso.Picasso
 import java.io.ByteArrayOutputStream
+import java.nio.file.Files.delete
+import java.nio.file.Files.exists
+import android.os.Environment.getExternalStorageDirectory
+import java.io.File
+import java.io.FileOutputStream
+import android.graphics.BitmapFactory
+
+
 
 
 class ChordsActivity: AppCompatActivity(){
@@ -40,15 +49,13 @@ class ChordsActivity: AppCompatActivity(){
         }
     }
     private fun setChord(chordView: ImageView, chord: Chord){
-        val chordFromDb = select(chord.image_url)
-        if (false) {    // for debug | chordFromDb == null
+        var chordImgName = select(chord.image_url)
+
+        if (chordImgName == null) {
             insert(chord.image_url)
-        } else {
-            Glide
-                    .with(this@ChordsActivity)
-                    .load(chord.image_url)
-                    .into(chordView)
+            chordImgName = select(chord.image_url)
         }
+        chordView.setImageBitmap(getImage(chordImgName))
     }
     private fun insert(id: String){
         val img = Picasso.with(this@ChordsActivity)
@@ -58,23 +65,50 @@ class ChordsActivity: AppCompatActivity(){
         database.use {
             insert("Chords",
                     "id" to id,
-                            "img" to getBitmapAsByteArray(img)
+                            "img" to img
             )
+            createDirectoryAndSaveFile(img, id.hashCode().toString())
         }
     }
-    private fun select(id: String): ByteArray?{
-        var chord: ByteArray? = null
+    private fun select(id: String): String?{
+        var chordPath: String? = null
         database.use {
-            chord = select("Chords")
+            chordPath = select("Chords")
                     .whereArgs("(id == {id})", "id" to id)
-                    .column("img")
-                    .exec{ parseOpt(BlobParser) }
+                    .column("path")
+                    .exec{ parseOpt(StringParser) }
         }
-        return chord
+        return chordPath
     }
-    private fun getBitmapAsByteArray(bitmap: Bitmap): ByteArray {
-        val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
-        return outputStream.toByteArray()
+
+    private fun createDirectoryAndSaveFile(imageToSave: Bitmap, fileName: String) {
+
+        val direct = File(Environment.getExternalStorageDirectory().toString() + "/sbchords")
+
+        if (!direct.exists()) {
+            val wallpaperDirectory = File("/sdcard/sbchords/")
+            wallpaperDirectory.mkdirs()
+        }
+
+        val file = File(File("/sdcard/sbchords/"), fileName)
+        if (file.exists()) {
+            file.delete()
+        }
+        try {
+            val out = FileOutputStream(file)
+            imageToSave.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            out.flush()
+            out.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+    private fun getImage(imgName: String?): Bitmap?{
+        val imgFile = File("/sdcard/sbchords/" + imgName)
+        if (imgFile.exists()) {
+            val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+            return myBitmap
+        }
+        return null
     }
 }

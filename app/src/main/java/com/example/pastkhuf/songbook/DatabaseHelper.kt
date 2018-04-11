@@ -18,11 +18,10 @@ class DatabaseHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "MyDatabase", 
     override fun onCreate(db: SQLiteDatabase) {
         db.createTable("Chords", true,
                 "id" to TEXT + PRIMARY_KEY + UNIQUE,
-                          "img" to BLOB)
+                          "path" to TEXT)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Here you can upgrade tables, as usual
         db.dropTable("Chords", true)
     }
 }
