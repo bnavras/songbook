@@ -26,6 +26,5 @@ class DatabaseHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "MyDatabase", 
     }
 }
 
-// Access property for Context
 val Context.database: DatabaseHelper
     get() = DatabaseHelper.getInstance(getApplicationContext())

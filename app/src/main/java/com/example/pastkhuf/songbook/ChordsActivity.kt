@@ -15,16 +15,11 @@ import org.jetbrains.anko.verticalLayout
 import android.graphics.Bitmap
 import android.os.Environment
 import android.widget.ImageView
-import com.squareup.picasso.Picasso
-import java.io.ByteArrayOutputStream
-import java.nio.file.Files.delete
-import java.nio.file.Files.exists
-import android.os.Environment.getExternalStorageDirectory
 import java.io.File
 import java.io.FileOutputStream
 import android.graphics.BitmapFactory
-
-
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
 
 
 class ChordsActivity: AppCompatActivity(){
@@ -48,7 +43,7 @@ class ChordsActivity: AppCompatActivity(){
             }
         }
     }
-    private fun setChord(chordView: ImageView, chord: Chord){
+    private fun setChord(chordView: ImageView, chord: Chord) = async(CommonPool){
         var chordImgName = select(chord.image_url)
 
         if (chordImgName == null) {
@@ -56,26 +51,27 @@ class ChordsActivity: AppCompatActivity(){
             chordImgName = select(chord.image_url)
         }
         chordView.setImageBitmap(getImage(chordImgName))
-    }
-    private fun insert(id: String){
-        val img = Picasso.with(this@ChordsActivity)
-                         .load(id)
-                         .get()
-
+    }.start()
+    private fun insert(id: String)= async(CommonPool){
+        val img = Glide.with(this@ChordsActivity).
+                load(id).
+                asBitmap().
+                into(-1,-1).
+                get()
         database.use {
             insert("Chords",
                     "id" to id,
-                            "img" to img
+                            "path" to id.hashCode().toString()
             )
             createDirectoryAndSaveFile(img, id.hashCode().toString())
         }
-    }
+    }.start()
     private fun select(id: String): String?{
         var chordPath: String? = null
         database.use {
             chordPath = select("Chords")
                     .whereArgs("(id == {id})", "id" to id)
-                    .column("path")
+                    //.column("path")
                     .exec{ parseOpt(StringParser) }
         }
         return chordPath
